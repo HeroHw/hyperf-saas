@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Admin;
+use Hyperf\Context\Context;
+
 class IndexController extends AbstractController
 {
     public function index()
@@ -19,7 +22,21 @@ class IndexController extends AbstractController
         $user = $this->request->input('user', 'Hyperf');
         $method = $this->request->getMethod();
 
+        Context::set('current_tenant', [
+            'schema' => 'public123',
+        ]);
+        try {
+
+            $a = Admin::where('id', '=', 1)->firstOrFail();
+        } catch (\Exception $e) {
+            return [
+                'message' => $e->getMessage(),
+            ];
+        }
+
+
         return [
+            'test' => $a,
             'method' => $method,
             'message' => "Hello {$user}.",
         ];
