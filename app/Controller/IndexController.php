@@ -23,10 +23,9 @@ class IndexController extends AbstractController
         $method = $this->request->getMethod();
 
         Context::set('current_tenant', [
-            'schema' => 'public123',
+            'schema' => 'public',
         ]);
         try {
-
             $a = Admin::where('id', '=', 1)->firstOrFail();
         } catch (\Exception $e) {
             return [

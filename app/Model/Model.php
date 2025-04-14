@@ -12,37 +12,24 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Hyperf\Context\Context;
-use Hyperf\DbConnection\Db;
+use App\Trait\SchemaTableTrait;
+use Hyperf\Database\Model\SoftDeletes;
 use Hyperf\DbConnection\Model\Model as BaseModel;
-use function Hyperf\Support\env;
 
 abstract class Model extends BaseModel
 {
+    use SchemaTableTrait;
+
+    public bool $timestamps = true;
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
+
+    protected array $casts = [
+        self::CREATED_AT => 'datetime:Y-m-d H:i:s',
+        self::UPDATED_AT => 'datetime:Y-m-d H:i:s',
+    ];
     public function getTable(): string
     {
-        $tenant = Context::get('current_tenant');
-        $schema = $tenant['schema'] ?? 'public';
-
-        // 自动处理表前缀
-        $prefix = env('DB_SCHEMA_PREFIX');
-        if ($this->schemaExists($schema) === false) {
-            throw new \Exception("schema不存在");
-        }
-
-        return "{$schema}.{$prefix}{$this->getRawTableName()}";
-    }
-
-    protected function getRawTableName(): string
-    {
-        return $this->table;
-    }
-
-    public function schemaExists(string $schema): bool
-    {
-        return (bool) Db::selectOne(
-            /** @lang text */ "SELECT 1 FROM information_schema.schemata WHERE schema_name = ?",
-            [$schema]
-        );
+        return $this->setSchema();
     }
 }
