@@ -26,4 +26,3 @@
 - RabbitMQ
 - Composer 2.0+
 - Swoole 5.1
-- 
