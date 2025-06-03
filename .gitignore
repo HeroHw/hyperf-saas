@@ -14,4 +14,4 @@ vendor/
 .vscode/
 /phpstan.neon
 /phpunit.xml
-migrations/
+/migrations
